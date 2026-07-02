@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🎁 プレゼントキット — ループエンジニアリング × SEO</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brand:#1C3461; --brand-deep:#16284A; --brand-soft:rgba(28,52,97,.08);
+    --accent:#5BBCD4; --accent-deep:#2C7A93; --accent-soft:rgba(91,188,212,.16);
+    --bg:#F7FAFC; --paper:#FFFFFF; --ink:#1C3461; --ink-mid:#4A6080; --ink-sub:#8098B4; --line:rgba(28,52,97,.12);
+    --head:'Noto Sans JP';
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--ink);font-family:'Noto Sans JP',-apple-system,'Hiragino Sans','Yu Gothic',sans-serif;line-height:1.7;}
+  .doc{max-width:880px;margin:0 auto;background:var(--paper);box-shadow:0 0 60px rgba(0,0,0,.10);overflow:hidden;}
+  .hero{position:relative;background:linear-gradient(160deg,var(--brand-soft) 0%,var(--bg) 70%);padding:44px 52px 36px;border-bottom:3px solid var(--brand-line,rgba(28,52,97,.22));overflow:hidden;}
+  .hero .chan{display:inline-flex;align-items:center;gap:12px;margin-bottom:14px;}
+  .hero .chan img{width:46px;height:46px;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.16);}
+  .hero .chan b{font-family:var(--head);font-weight:900;color:var(--brand-deep);font-size:16px;}
+  .hero .chan b small{display:block;font-size:11px;color:var(--ink-mid);font-weight:500;}
+  .eyebrow{font-family:var(--head);font-weight:900;color:var(--brand-deep);letter-spacing:2px;font-size:13px;margin-bottom:10px;}
+  h1{font-family:var(--head);font-weight:900;font-size:34px;line-height:1.25;color:var(--ink);}
+  h1 .hl{color:var(--brand-deep);}
+  .hero p.sub{font-size:16px;color:var(--ink-mid);font-weight:700;margin-top:12px;}
+  .idx{background:var(--brand-soft);border-bottom:1px solid var(--line);padding:14px 52px;display:flex;flex-wrap:wrap;gap:8px;}
+  .idx a{font-size:13px;font-weight:700;color:var(--brand-deep);text-decoration:none;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:5px 13px;}
+  section{padding:32px 52px;border-bottom:1px solid var(--line);position:relative;}
+  .kn{position:absolute;left:52px;top:34px;width:30px;height:30px;border-radius:50%;background:var(--accent);color:var(--ink);font-family:var(--head);font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 0 var(--accent-deep);}
+  section h2{font-family:var(--head);font-weight:900;font-size:21px;color:var(--ink);margin:0 0 8px 44px;}
+  .desc{font-size:15px;color:var(--ink);margin-left:44px;margin-bottom:6px;}
+  .use{font-size:13.5px;color:var(--ink-mid);margin-left:44px;margin-bottom:12px;}
+  pre.prompt{background:var(--ink);color:#ECECEA;border-radius:12px;padding:16px 18px;white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,Menlo,monospace;font-size:13px;line-height:1.6;}
+  .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
+  .btn{display:inline-flex;align-items:center;gap:8px;background:var(--accent);border:2px solid var(--brand-deep);color:var(--ink);border-radius:999px;padding:9px 22px;font-family:var(--head);font-weight:900;font-size:14px;cursor:pointer;text-decoration:none;}
+  .btn.ghost{background:var(--paper);border:1.5px solid var(--line);color:var(--brand-deep);}
+  .btn:hover{filter:brightness(.97);}
+  .tip{font-size:13px;color:var(--ink-mid);margin-top:12px;background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:8px;padding:9px 13px;}
+  .how{background:var(--accent-soft);}
+  .how ol{margin:8px 0 0 20px;font-size:14.5px;} .how li{margin-bottom:5px;}
+  .note{background:var(--paper);border:1.5px solid var(--accent);border-radius:12px;padding:16px 18px;margin-top:14px;}
+  .note b{color:var(--accent-deep);font-family:var(--head);}
+  footer{background:var(--ink);color:#EBEBE7;padding:28px 52px;font-size:13px;}
+</style>
+</head>
+<body>
+<div class="doc">
+  <div class="hero">
+    <div class="chan"><img src="data:image/png;base64,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" alt="AIエージェント / Kawaru"><b>AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></b></div>
+    <div class="eyebrow">🎁 PRESENT KIT</div>
+    <h1><span class="hl">ループエンジニアリング × SEO</span><br>プレゼントキット（6点セット）</h1>
+    <p class="sub">SEOループをそのまま組める配布物を6点。各ブロックはコピー、またはダウンロードで受け取れます。</p>
+  </div>
+  <div class="idx">
+    <a href="#kit1">1. SEO Loop 設計テンプレート</a>
+    <a href="#kit2">2. SEO Agent Workflow（Mermaid）</a>
+    <a href="#kit3">3. キーワードリサーチ プロンプト集</a>
+    <a href="#kit4">4. 記事レビュー チェックリスト</a>
+    <a href="#kit5">5. AGENTS.md（SEOルール）</a>
+    <a href="#kit6">6. Search Console 改善ワークフロー</a>
+  </div>
+  <section id="kit1">
+    <div class="kn">1</div>
+    <h2>SEO Loop 設計テンプレート</h2>
+    <p class="desc">SEOを「1回書いて終わり」ではなく、自律的に回り続けるループとして設計するための穴埋めテンプレート。</p>
+    <p class="use"><b>使い方:</b> そのままコピーして、対象サイト・指標・停止条件を埋める。エージェントの初期設定やAGENTS.mdの隣に置く。</p>
+    <pre class="prompt" id="p1"># SEO Loop 設計テンプレート
+
+## 1. ループの目的（Goal）
+- 対象サイト / セクション:
+- 改善したい指標:（例: 対象KW群の平均掲載順位 / 対象ページのCTR）
+- 目標値と期限:
+
+## 2. トリガー（いつ回すか）
+- [ ] cron（例: 毎日 06:00）
+- [ ] Search Console のアラート（順位 / CTR 下落）
+- [ ] 新規KW発見（他ループからの通知）
+- [ ] 手動
+
+## 3. ループ本体（Act -&gt; Observe）
+1. Research: 対象KWのSERP・競合上位を分析し、勝ち要件を出す
+2. Writer: 要件に沿って新規作成 or 該当箇所を改稿
+3. SEO Checker: SEO/GEOスコア・内部リンク・構造化データを検査
+4. Reviewer: 事実・E-E-A-T・読みやすさを点検
+5. Publisher: CMSへ反映（下書き / 公開）
+
+## 4. 停止条件（Stop condition）
+- [ ] 品質スコア &gt;= (閾値)
+- [ ] Reviewer の必須指摘がすべて解消
+- [ ] 目標順位に到達 or 上限イテレーション（例: 5回）に到達
+
+## 5. 記録（Memory / Log）
+- 実行日時・対象・変更点・結果指標を LOG に追記
+- 次回はこの LOG を読んでから開始する
+
+## 6. ガードレール
+- 公開はレビュー後（人間の最終確認を挟む工程を明記）
+- 1回あたりのコスト上限:</pre>
+    <div class="btns">
+      <button class="btn" onclick="copyPrompt('p1', this)">📋 コピー</button>
+      <a class="btn ghost" href="kit/loop-engineering-seo-template.md" download>⬇ ダウンロード（.md）</a>
+    </div>
+    <p class="tip">💡 停止条件を必ず数値で決めておくと、無限ループ・コスト暴走を防げる。</p>
+  </section>
+  <section id="kit2">
+    <div class="kn">2</div>
+    <h2>SEO Agent Workflow（Mermaid）</h2>
+    <p class="desc">6つの専門エージェントが共有メモリを介して回る、SEOループの全体像を描いた Mermaid 図。</p>
+    <p class="use"><b>使い方:</b> GitHub / Notion / Obsidian など Mermaid 対応の場所にそのまま貼ると図として描画される。</p>
+    <pre class="prompt" id="p2">flowchart LR
+    T([Trigger: cron / GSCアラート / 新規KW]) --&gt; R[Research Agent&lt;br/&gt;KW・SERP・競合]
+    R --&gt; W[Writer Agent&lt;br/&gt;執筆 / 改稿]
+    W --&gt; RV[Reviewer Agent&lt;br/&gt;事実・E-E-A-T]
+    RV --&gt; SC[SEO Checker&lt;br/&gt;SEO/GEO・内部リンク]
+    SC --&gt;|指摘あり| W
+    SC --&gt;|OK| P[Publisher&lt;br/&gt;CMS入稿]
+    P --&gt; M[Monitor&lt;br/&gt;順位・CTR・index]
+    M --&gt;|下落検知| R
+    M --&gt;|記録| KB[(共有メモリ&lt;br/&gt;knowledge base)]
+    KB -.読み込み.-&gt; R</pre>
+    <div class="btns">
+      <button class="btn" onclick="copyPrompt('p2', this)">📋 コピー</button>
+      <a class="btn ghost" href="kit/seo-agent-workflow-mermaid.md" download>⬇ ダウンロード（.md）</a>
+    </div>
+    <p class="tip">💡 SC -> W の戻り矢印が「品質ゲートを通るまで回す」ループの心臓部。</p>
+  </section>
+  <section id="kit3">
+    <div class="kn">3</div>
+    <h2>キーワードリサーチ プロンプト集</h2>
+    <p class="desc">検索意図の分類から記事ブリーフ生成まで、Research Agent にそのまま渡せる4本のプロンプト。</p>
+    <p class="use"><b>使い方:</b> {{ }} の箇所を自分のキーワードに置き換えて、AIエージェントに投げる。</p>
+    <pre class="prompt" id="p3"># キーワードリサーチ プロンプト集
+
+## 1. 検索意図の分類
+以下のキーワード群を、検索意図（Know / Do / Go / Buy）で分類し、
+各意図で狙うべきコンテンツ形式を表にして。
+キーワード: {{keywords}}
+
+## 2. 競合ギャップ抽出
+対象KW「{{keyword}}」で上位10件の見出し構成を要約し、
+多くのページが共通でカバーしているサブトピックと、
+逆に手薄なサブトピック（ギャップ）を分けて列挙して。
+
+## 3. ロングテール展開
+シードKW「{{keyword}}」から、検索意図が明確でコンバージョンに近い
+ロングテールKWを20個、意図の注釈つきで出して。
+
+## 4. コンテンツブリーフ生成
+KW「{{keyword}}」の記事ブリーフを作成:
+想定読者 / 検索意図 / 推奨文字数 / H2・H3構成案 /
+含めるべきエンティティ / 内部リンク候補 / FAQ 5件。</pre>
+    <div class="btns">
+      <button class="btn" onclick="copyPrompt('p3', this)">📋 コピー</button>
+      <a class="btn ghost" href="kit/keyword-research-prompts.md" download>⬇ ダウンロード（.md）</a>
+    </div>
+    <p class="tip">💡 出力はそのまま公開せず、必ず一次データ（実際のSERP）で裏取りしてから使う。</p>
+  </section>
+  <section id="kit4">
+    <div class="kn">4</div>
+    <h2>記事レビュー チェックリスト</h2>
+    <p class="desc">Reviewer / SEO Checker が公開前に毎回通す、E-E-A-T × SEO のチェックリスト。</p>
+    <p class="use"><b>使い方:</b> 記事ごとにコピーして、各項目をチェックしてから公開する。</p>
+    <pre class="prompt" id="p4"># 記事レビュー チェックリスト（SEO × E-E-A-T）
+
+## E-E-A-T
+- [ ] Experience: 一次体験・実データ・具体例が入っているか
+- [ ] Expertise: 記述が正確で、専門用語の使い方が適切か
+- [ ] Authoritativeness: 主張に信頼できる裏付け / 出典があるか
+- [ ] Trust: 誇張・断定保証がなく、透明性があるか（最重要）
+
+## 検索意図
+- [ ] タイトル・導入が検索意図に一致しているか
+- [ ] 読者の「次の疑問」に本文で答えているか
+
+## SEO 技術
+- [ ] タイトル / メタディスクリプションが適切（長さ・KW）
+- [ ] 見出し階層（H1 -&gt; H2 -&gt; H3）が論理的
+- [ ] 内部リンク（関連記事・回遊）が張られている
+- [ ] 構造化データ（schema）が適切
+- [ ] 画像 alt / 代替テキスト
+
+## 可読性
+- [ ] 一文が長すぎない / 箇条書きと散文のバランス
+- [ ] 結論が先、根拠が後
+
+## 公開前
+- [ ] 事実確認済み（未確認は注記 or 削除）
+- [ ] 人間の最終レビュー完了</pre>
+    <div class="btns">
+      <button class="btn" onclick="copyPrompt('p4', this)">📋 コピー</button>
+      <a class="btn ghost" href="kit/article-review-checklist.md" download>⬇ ダウンロード（.md）</a>
+    </div>
+    <p class="tip">💡 Trust（信頼性）が最重要。誇張表現を1つでも見つけたら中立表現に直す。</p>
+  </section>
+  <section id="kit5">
+    <div class="kn">5</div>
+    <h2>AGENTS.md（SEOルール）</h2>
+    <p class="desc">SEOループを回すエージェントに読ませる AGENTS.md のSEO運用ルール雛形。</p>
+    <p class="use"><b>使い方:</b> リポジトリ直下の AGENTS.md にコピーして、自分のサイト事情に合わせて調整する。</p>
+    <pre class="prompt" id="p5"># AGENTS.md — SEO運用ルール
+
+## 役割
+このリポジトリで動くエージェントは、SEOループ
+（収集 -&gt; 分析 -&gt; 執筆 -&gt; 評価 -&gt; 改稿 -&gt; 監視）の一部を担う。
+
+## 執筆ルール
+- 検索意図を最初に定義してから書く
+- 誇張・断定保証をしない（「必ず上位表示」等はNG）
+- 事実には裏付けを付ける。裏が取れない主張は書かない or 注記する
+- E-E-A-T（経験・専門性・権威性・信頼性）を満たす
+
+## 品質ゲート（停止条件）
+- Reviewer の必須指摘がすべて解消するまで公開しない
+- 公開は人間の最終確認後
+
+## メモリ / ログ
+- 作業のたびに LOG に「対象・変更・結果指標」を追記する
+- セッション開始時は直近の LOG を読んでから着手する
+
+## やってはいけないこと
+- キーワードの不自然な詰め込み
+- 他サイトの文章の複製
+- 出典のない数値・価格・日付の断定</pre>
+    <div class="btns">
+      <button class="btn" onclick="copyPrompt('p5', this)">📋 コピー</button>
+      <a class="btn ghost" href="kit/agents-md-seo-rules.md" download>⬇ ダウンロード（.md）</a>
+    </div>
+    <p class="tip">💡 「品質ゲートを通るまで公開しない」を明記すると、自動化しても質が崩れない。</p>
+  </section>
+  <section id="kit6">
+    <div class="kn">6</div>
+    <h2>Search Console 改善ワークフロー</h2>
+    <p class="desc">Search Console のデータを起点に、順位下落・低CTR・indexエラーを直す監視ループの手順書。</p>
+    <p class="use"><b>使い方:</b> Monitor エージェントの定期タスクとして登録する。データはAPI / 連携ツール経由で読ませる。</p>
+    <pre class="prompt" id="p6"># Search Console 改善ワークフロー
+
+## 前提
+Search Console のデータ（順位・CTR・表示回数・index）を
+エージェントが読める状態にする（API / 連携ツール経由）。
+
+## 定期チェック（例: 週1）
+1. 掲載順位が下落したクエリ / ページを抽出（前週比）
+2. 表示回数は多いがCTRが低いページを抽出（改善余地大）
+3. index エラー・カバレッジ問題を抽出
+
+## 改善アクション
+- 低CTRページ -&gt; タイトル / メタディスクリプションを検索意図に合わせて書き換え
+- 順位下落ページ -&gt; 競合の更新点を調べ、該当箇所を改稿（既存記事改善ループへ）
+- index エラー -&gt; 原因を分類し、対応 or エスカレーション
+
+## 記録
+- 変更前後の指標を LOG に残し、2〜4週間後に効果を再測定する
+
+## 注意
+- 一度に多くを変えず、変更点を絞って因果を測れるようにする
+- 連携ツールはサードパーティの場合がある。権限は最小限に</pre>
+    <div class="btns">
+      <button class="btn" onclick="copyPrompt('p6', this)">📋 コピー</button>
+      <a class="btn ghost" href="kit/search-console-workflow.md" download>⬇ ダウンロード（.md）</a>
+    </div>
+    <p class="tip">💡 変更は一度に絞る。まとめて変えると、何が効いたか分からなくなる。</p>
+  </section>
+  <section class="how">
+    <h2 style="margin-left:0;">受け取り方・使い方</h2>
+    <ol>
+      <li>各ブロックの「📋 コピー」でコピー、または「⬇ ダウンロード」で .md を保存（GitHub の kit/ フォルダからも受け取れます）</li>
+      <li>まず「SEO Loop 設計テンプレート」で目的・停止条件を決める</li>
+      <li>「AGENTS.md（SEOルール）」をリポジトリに置き、プロンプト集・チェックリストを各エージェントに渡す</li>
+      <li>「Search Console 改善ワークフロー」を Monitor の定期タスクに登録してループを回す</li>
+    </ol>
+    <div class="note"><b>⚠️ 注意:</b> AIの出力はそのまま公開せず、必ず人間がレビューしてから確定してください。数値・順位の断定や誇張表現は避け、事実は一次データで裏取りを。</div>
+  </section>
+  <footer>AIエージェント・Kawaru / 2026-07-02 ｜ このキットは自由に使えます。</footer>
+</div>
+<script>
+function copyTextWithFallback(text){
+  return navigator.clipboard.writeText(text).then(()=>true).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();
+    const ok=document.execCommand('copy');ta.remove();return ok;
+  });
+}
+function showCopyResult(btn,ok){
+  const orig=btn.textContent;
+  btn.textContent=ok?'✔ コピーしました！':'✖ コピーできませんでした。⬇ ダウンロードをご利用ください';
+  setTimeout(()=>{btn.textContent=orig;},ok?1800:3500);
+}
+async function copyPrompt(id,btn){
+  const ok=await copyTextWithFallback(document.getElementById(id).textContent);
+  showCopyResult(btn,ok);
+}
+</script>
+</body>
+</html>

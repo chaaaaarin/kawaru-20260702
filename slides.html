@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ループエンジニアリング × SEO — AIエージェント / Kawaru スライド</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brand:#1C3461; --brand-deep:#16284A; --brand-soft:rgba(28,52,97,.08); --brand-line:rgba(28,52,97,.22);
+    --accent:#5BBCD4; --accent-deep:#2C7A93; --accent-soft:rgba(91,188,212,.16);
+    --bg:#F7FAFC; --paper:#FFFFFF; --ink:#1C3461; --ink-mid:#4A6080; --ink-sub:#8098B4; --line:rgba(28,52,97,.12);
+    --canvas:#D8E0EC;
+    --head:'Noto Sans JP';
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--canvas);display:flex;flex-direction:column;align-items:center;justify-content:center;
+    min-height:100vh;font-family:'Noto Sans JP',-apple-system,'Hiragino Sans','Yu Gothic',sans-serif;color:var(--ink);}
+  .slide{width:1280px;height:720px;background:var(--bg);position:relative;display:none;
+    flex-direction:column;align-items:center;justify-content:center;padding:62px 78px 72px;overflow:hidden;}
+  .slide.active{display:flex;}
+  .slide::before{content:'';position:absolute;top:0;left:0;right:0;height:6px;
+    background:linear-gradient(90deg,var(--brand) 0%,var(--brand-deep) 52%,var(--accent) 100%);}
+  .coin{position:absolute;width:120px;height:120px;border-radius:50%;background:var(--accent);opacity:.13;top:-42px;left:-36px;}
+  .dots{position:absolute;display:grid;grid-template-columns:repeat(3,6px);gap:7px;opacity:.45;}
+  .dots span{width:6px;height:6px;border-radius:50%;background:var(--accent);}
+  .dots.br{bottom:84px;right:58px;} .dots.tl{top:88px;left:52px;} .dots.brand span{background:var(--brand);}
+  .logo{position:absolute;top:18px;right:38px;z-index:10;display:flex;align-items:center;gap:10px;}
+  .logo img{width:44px;height:44px;border-radius:50%;border:2px solid var(--paper);box-shadow:0 2px 8px rgba(0,0,0,.14);}
+  .logo .lt{font-family:var(--head);font-weight:900;font-size:14px;color:var(--brand-deep);line-height:1.15;}
+  .logo .lt small{display:block;font-size:10px;color:var(--ink-mid);font-weight:500;letter-spacing:.4px;}
+  .sno{position:absolute;bottom:20px;right:44px;font-size:12px;color:var(--ink-mid);}
+  .kick{position:absolute;bottom:20px;left:44px;font-size:12px;color:var(--ink-sub);}
+  .eyebrow{font-family:var(--head);font-size:13px;font-weight:900;color:var(--brand-deep);letter-spacing:2px;
+    margin-bottom:14px;display:inline-flex;align-items:center;gap:9px;}
+  .eyebrow::before,.eyebrow::after{content:'';width:20px;height:2px;background:var(--brand-line);border-radius:2px;}
+  h1{font-family:var(--head);font-size:50px;font-weight:900;color:var(--ink);line-height:1.22;text-align:center;margin-bottom:24px;}
+  h2{font-family:var(--head);font-size:38px;font-weight:900;color:var(--ink);line-height:1.25;}
+  .stitle{text-align:center;margin-bottom:26px;}
+  .secno{display:inline-block;font-family:var(--head);font-weight:900;color:var(--accent-deep);
+    background:var(--accent-soft);border-radius:8px;padding:2px 12px;font-size:22px;margin-right:10px;}
+  .lead{font-size:21px;color:var(--ink-mid);line-height:1.7;text-align:center;max-width:900px;}
+  .hl{color:var(--brand-deep);font-weight:900;} .hl-a{color:var(--accent-deep);font-weight:900;}
+  .sep{width:56px;height:4px;background:linear-gradient(90deg,var(--brand),var(--accent));border-radius:3px;margin:14px auto;}
+  .yen-chip{font-family:var(--head);font-weight:900;background:var(--accent);color:var(--ink);border-radius:999px;padding:4px 14px;font-size:13px;}
+  .head-row{display:flex;align-items:center;gap:14px;width:100%;margin-bottom:24px;}
+  .head-row h2{font-size:32px;text-align:left;}
+  .bullets{list-style:none;width:100%;max-width:880px;}
+  .bullets li{font-size:25px;font-weight:700;color:var(--ink);padding:14px 0 14px 44px;position:relative;border-bottom:1px solid var(--line);}
+  .bullets li::before{content:'';position:absolute;left:4px;top:50%;transform:translateY(-50%);width:13px;height:13px;border-radius:50%;background:var(--accent);}
+  .checks{list-style:none;width:100%;max-width:900px;}
+  .checks li{font-size:21px;font-weight:700;color:var(--ink);padding:11px 0 11px 44px;position:relative;}
+  .checks li::before{content:'✔';position:absolute;left:6px;color:var(--brand);font-weight:900;}
+  .cols{display:grid;gap:18px;width:100%;} .c2{grid-template-columns:1fr 1fr;} .c3{grid-template-columns:repeat(3,1fr);} .c4{grid-template-columns:repeat(4,1fr);}
+  .card{background:var(--paper);border:1.5px solid var(--line);border-radius:16px;padding:24px 20px;box-shadow:0 3px 12px rgba(0,0,0,.05);}
+  .card.accent{border-color:var(--brand);border-width:2px;}
+  .card .pin{width:42px;height:42px;border-radius:50%;background:var(--accent);color:var(--ink);font-family:var(--head);
+    font-weight:900;font-size:19px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;box-shadow:0 2px 0 var(--accent-deep);}
+  .card h3{font-family:var(--head);font-size:21px;font-weight:900;color:var(--ink);margin-bottom:8px;}
+  .card p{font-size:15px;color:var(--ink-mid);line-height:1.6;}
+  .card .mark{font-size:12px;font-weight:700;color:var(--brand-deep);margin-top:8px;}
+  .center{text-align:center;} .center .pin{margin:0 auto 12px;}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;width:100%;max-width:1000px;}
+  .stat{background:var(--paper);border:1.5px solid var(--line);border-radius:16px;padding:24px;text-align:center;}
+  .stat .n{font-family:var(--head);font-size:46px;font-weight:900;color:var(--brand-deep);line-height:1;}
+  .stat .n small{font-size:20px;} .stat .u{font-size:13px;color:var(--ink-sub);margin-top:4px;} .stat .l{font-size:15px;font-weight:700;color:var(--ink);margin-top:8px;}
+  .flow{display:flex;align-items:stretch;gap:0;width:100%;max-width:1080px;}
+  .flow .step{flex:1;background:var(--paper);border:1.5px solid var(--line);border-top:4px solid var(--brand);border-radius:12px;padding:18px 14px;text-align:center;}
+  .flow .step .t{font-family:var(--head);font-weight:900;font-size:17px;color:var(--ink);margin-bottom:6px;}
+  .flow .step .d{font-size:13px;color:var(--ink-mid);line-height:1.5;}
+  .flow .arrow{display:flex;align-items:center;color:var(--accent);font-size:26px;font-weight:900;padding:0 6px;}
+  .cycle{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;max-width:1000px;}
+  .cycle .node{width:150px;height:150px;border-radius:50%;background:var(--brand-soft);border:2px solid var(--brand);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10px;}
+  .cycle .node b{font-family:var(--head);font-size:16px;color:var(--brand-deep);} .cycle .node span{font-size:12px;color:var(--ink-mid);}
+  .cycle .ar{color:var(--accent);font-size:28px;font-weight:900;}
+  .timeline{width:100%;max-width:1000px;}
+  .timeline .row{display:flex;gap:18px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line);}
+  .timeline .tbadge{flex-shrink:0;background:var(--brand);color:#fff;font-family:var(--head);font-weight:900;border-radius:8px;padding:6px 14px;font-size:14px;min-width:96px;text-align:center;}
+  .timeline .row b{font-family:var(--head);font-size:18px;color:var(--ink);} .timeline .row p{font-size:14px;color:var(--ink-mid);margin-top:3px;}
+  table.cmp{width:100%;max-width:1040px;border-collapse:separate;border-spacing:0;font-size:18px;background:var(--paper);border:1.5px solid var(--line);border-radius:14px;overflow:hidden;}
+  table.cmp th,table.cmp td{padding:13px 18px;text-align:left;border-bottom:1px solid var(--line);}
+  table.cmp thead th{background:var(--ink);color:#fff;font-family:var(--head);font-weight:700;font-size:16px;}
+  table.cmp thead th:first-child{background:var(--brand-deep);}
+  table.cmp tbody tr:last-child td{border-bottom:none;} table.cmp td:first-child{font-weight:700;}
+  table.cmp .yes{color:var(--brand-deep);font-weight:900;} table.cmp .no{color:var(--ink-sub);}
+  .map{list-style:none;width:100%;max-width:1000px;}
+  .map li{display:flex;align-items:center;gap:14px;font-size:18px;font-weight:600;color:var(--ink);padding:13px 16px;margin-bottom:10px;background:var(--paper);border:1.5px solid var(--line);border-left:4px solid var(--brand);border-radius:12px;}
+  .map li .q{flex:1;} .map li .ar{color:var(--accent);font-weight:900;font-size:20px;} .map li .a{flex:1.3;color:var(--brand-deep);font-weight:700;}
+  .steps{list-style:none;width:100%;max-width:940px;}
+  .steps li{font-size:19px;font-weight:600;color:var(--ink);padding:13px 16px 13px 58px;position:relative;margin-bottom:10px;background:var(--paper);border:1.5px solid var(--line);border-left:4px solid var(--brand);border-radius:12px;}
+  .steps li .n{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:30px;height:30px;background:var(--accent);color:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--head);font-weight:900;font-size:15px;box-shadow:0 2px 0 var(--accent-deep);}
+  .prompt{font-family:ui-monospace,Menlo,monospace;font-size:16px;background:var(--ink);color:#ECECEA;border-radius:12px;padding:18px 22px;line-height:1.7;width:100%;max-width:980px;text-align:left;}
+  .prompt .c{color:var(--accent);} .prompt .cm{color:var(--ink-sub);}
+  .ba{display:flex;align-items:center;gap:20px;width:100%;max-width:1040px;}
+  .ba .panel{flex:1;background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:22px;}
+  .ba .panel.after{border-color:var(--brand);border-width:2px;}
+  .ba .panel .tag{font-family:var(--head);font-weight:900;font-size:13px;border-radius:999px;padding:3px 12px;display:inline-block;margin-bottom:10px;}
+  .ba .panel.before .tag{background:var(--line);color:var(--ink-mid);} .ba .panel.after .tag{background:var(--brand);color:#fff;}
+  .ba .panel ul{list-style:none;} .ba .panel li{font-size:15px;color:var(--ink);padding:6px 0 6px 22px;position:relative;}
+  .ba .panel.before li::before{content:'×';position:absolute;left:0;color:var(--ink-sub);font-weight:900;}
+  .ba .panel.after li::before{content:'○';position:absolute;left:0;color:var(--brand);font-weight:900;}
+  .ba .mid{color:var(--accent);font-size:34px;font-weight:900;}
+  .imgbox{border:2px dashed var(--brand-line);border-radius:14px;background:var(--brand-soft);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--brand-deep);font-weight:700;text-align:center;padding:18px;}
+  .imgbox .ic{font-size:30px;margin-bottom:6px;} .imgbox small{display:block;color:var(--ink-mid);font-weight:500;font-size:12px;margin-top:4px;}
+  .note-box{background:var(--accent-soft);border:1.5px solid var(--accent);border-radius:14px;padding:20px 24px;max-width:1000px;}
+  .note-box h3{font-family:var(--head);font-weight:900;color:var(--accent-deep);font-size:18px;margin-bottom:8px;}
+  .note-box ul{margin-left:20px;font-size:15px;color:var(--ink);} .note-box li{margin-bottom:5px;}
+  .ghost{font-size:13px;color:var(--ink-mid);margin-top:10px;text-align:center;}
+  .pill{display:inline-flex;align-items:center;gap:8px;background:var(--accent);border:2px solid var(--accent-deep);color:var(--ink);border-radius:999px;padding:12px 28px;font-family:var(--head);font-size:20px;font-weight:900;margin-top:6px;}
+  .badge{display:inline-block;background:var(--brand-deep);color:#fff;font-size:13px;font-weight:700;border-radius:6px;padding:4px 12px;}
+  .urlchip{display:inline-block;font-family:var(--head);font-weight:900;background:var(--paper);border:2px solid var(--brand);color:var(--brand-deep);border-radius:999px;padding:10px 24px;font-size:22px;margin-top:8px;text-decoration:none;}
+  .tldr{display:flex;gap:16px;width:100%;max-width:1040px;}
+  .tldr .t{flex:1;background:var(--paper);border:1.5px solid var(--line);border-left:4px solid var(--accent);border-radius:14px;padding:22px 20px;}
+  .tldr .t .k{font-family:var(--head);font-weight:900;color:var(--ink);font-size:14px;margin-bottom:7px;letter-spacing:.5px;}
+  .tldr .t p{font-size:17px;color:var(--ink);font-weight:700;line-height:1.5;}
+  .toc{columns:2;column-gap:48px;width:100%;max-width:980px;list-style:none;}
+  .toc li{font-size:18px;font-weight:700;color:var(--ink);padding:9px 0 9px 40px;position:relative;border-bottom:1px solid var(--line);break-inside:avoid;}
+  .toc li span{position:absolute;left:0;top:9px;width:26px;height:26px;background:var(--brand-soft);color:var(--brand-deep);border-radius:7px;font-family:var(--head);font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;}
+  .nav{display:flex;align-items:center;gap:20px;margin-top:16px;}
+  .nav-btn{background:var(--paper);border:1.5px solid var(--line);color:var(--brand-deep);padding:9px 26px;border-radius:10px;cursor:pointer;font-family:var(--head);font-size:14px;font-weight:700;transition:.18s;}
+  .nav-btn:hover{border-color:var(--brand);background:var(--brand-soft);}
+  .counter{color:var(--ink-mid);font-size:14px;min-width:70px;text-align:center;}
+  .draft-tag{position:fixed;top:10px;left:10px;background:var(--brand-deep);color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:5px;z-index:99;letter-spacing:.4px;}
+</style>
+</head>
+<body>
+<div class="draft-tag">AIエージェント・Kawaru / 2026-07-02</div>
+
+<!-- 01 表紙 -->
+<div class="slide active"><span class="coin"></span>
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <div class="dots tl"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <p class="eyebrow">AI を使いこなす</p>
+  <h1 style="font-size:54px;"><span class="hl">ループエンジニアリング</span> × SEO<br>「AI社員に書かせる」から「ループを設計する」へ</h1>
+  <div class="sep"></div>
+  <p class="lead" style="font-weight:700;">前回の「AI社員でSEO自動化」を、Anthropic公式のLoop Engineeringで捉え直す。何が変わって、何が良くなったのか</p>
+  <span class="yen-chip" style="margin-top:20px;">&lt;/&gt; 2026年版・前回動画の進化版</span>
+  <span class="kick">AIエージェント / Kawaru</span><span class="sno">1</span>
+</div>
+
+<!-- 02 この資料について -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <p class="eyebrow">はじめに</p><h2 class="stitle">この資料の読み方</h2>
+  <ul class="checks">
+    <li>前回の「AI社員でSEO自動化」を、Anthropic公式のループ枠組みで再設計します</li>
+    <li>確度マーク: <span class="hl">✅公式確認済み（Anthropic/Google）</span> ／ 🔶一次情報（自チャンネル過去動画・記事）／ ⚠️未確認</li>
+    <li>前回動画の数値（40分・月60本・95点等）は運用条件で変動。保証ではありません ⚠️</li>
+    <li>「オートモード／ダイナミックワークフロー」は研究プレビュー段階の機能 ⚠️</li>
+  </ul>
+  <span class="kick">この資料について</span><span class="sno">2</span>
+</div>
+
+<!-- 03 目次 -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <p class="eyebrow">CONTENTS</p><h2 class="stitle">この資料の流れ</h2>
+  <ul class="toc">
+    <li><span>1</span>なぜ「AI社員」から「ループ」へ進化したのか</li>
+    <li><span>2</span>ループの4種類（公式）をSEOに当てはめる</li>
+    <li><span>3</span>SEOループのワークフロー</li>
+    <li><span>4</span>実践例 — 4つのループ</li>
+    <li><span>5</span>これからのSEO担当者の仕事</li>
+    <li><span>6</span>確度・注意点・まとめ</li>
+  </ul>
+  <span class="kick">目次</span><span class="sno">3</span>
+</div>
+
+<!-- 04 TL;DR -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <p class="eyebrow">まず3行で</p><h2 class="stitle">結論</h2>
+  <div class="tldr">
+    <div class="t"><div class="k">POINT 1</div><p>前回の「AI社員でSEO自動化」を<span class="hl">ループの設計</span>として体系化</p></div>
+    <div class="t"><div class="k">POINT 2</div><p>前回＝<span class="hl">タイムベース</span>中心。今回＝<span class="hl-a">ゴール＋プロアクティブ</span>まで拡張</p></div>
+    <div class="t"><div class="k">POINT 3</div><p>肝は<span class="hl">停止条件・共有メモリ・複利</span>。回すほど賢くなる</p></div>
+  </div>
+  <span class="kick">TL;DR</span><span class="sno">4</span>
+</div>
+
+<!-- 05 問題提起 -->
+<div class="slide"><div class="dots br brand"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <h2 class="stitle">こんな悩み、ありませんか？</h2>
+  <ul class="bullets">
+    <li>AI社員で記事は自動化できたが、公開後の改善は結局手作業</li>
+    <li>順位が落ちても気づくのが遅く、対応が後手になる</li>
+    <li>「自動化の次の一手」が分からない</li>
+  </ul>
+  <p class="lead" style="margin-top:18px;">→ 答えは <span class="hl">ループの設計</span> にある</p>
+  <span class="kick">問題提起</span><span class="sno">5</span>
+</div>
+
+<!-- 06 第1章 前回の振り返り -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <div class="head-row"><span class="secno">第1章</span><h2>前回まで：AI社員でSEO自動化</h2></div>
+  <div class="flow">
+    <div class="step"><div class="t">KW選定</div><div class="d">伸びる語を選ぶ</div></div><div class="arrow">→</div>
+    <div class="step"><div class="t">執筆</div><div class="d">担当エージェント</div></div><div class="arrow">→</div>
+    <div class="step"><div class="t">品質95点</div><div class="d">満点評価</div></div><div class="arrow">→</div>
+    <div class="step"><div class="t">公開</div><div class="d">WordPress</div></div><div class="arrow">→</div>
+    <div class="step"><div class="t">分析</div><div class="d">GA/GSC</div></div>
+  </div>
+  <p class="lead" style="margin-top:22px;">指揮官＋担当エージェントを<span class="hl">朝5時・午後2時・夜10時に定期実行</span> 🔶</p>
+  <p class="ghost">自チャンネル過去動画（Claude Code版「AI社員8人」／Kawaru版「Codex社員」）</p>
+  <span class="kick">前回の振り返り</span><span class="sno">6</span>
+</div>
+
+<!-- 07 第1章 何が変わる -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <div class="head-row"><span class="secno">第1章</span><h2>前回 → 今回で何が良くなる？</h2></div>
+  <table class="cmp">
+    <thead><tr><th>観点</th><th>前回（AI社員）🔶</th><th>今回（ループ設計）✅</th></tr></thead>
+    <tbody>
+      <tr><td>考え方</td><td class="no">雇って書かせる</td><td class="yes">ループを設計して回す</td></tr>
+      <tr><td>起動</td><td class="no">時間で定期実行</td><td class="yes">イベント駆動（プロアクティブ）</td></tr>
+      <tr><td>停止</td><td>95点で公開判断</td><td class="yes">停止条件を明示（/goal・検証役）</td></tr>
+      <tr><td>検証</td><td>人が最終チェック</td><td class="yes">実行役と検証役を分ける</td></tr>
+      <tr><td>積み上げ</td><td>分析を次記事へ</td><td class="yes">共有メモリで複利</td></tr>
+    </tbody>
+  </table>
+  <span class="kick">前回との違い</span><span class="sno">7</span>
+</div>
+
+<!-- 08 第1章 定義と進化 -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <div class="head-row"><span class="secno">第1章</span><h2>ループの定義（公式）</h2></div>
+  <p class="lead" style="text-align:left;font-size:24px;color:var(--ink);font-weight:700;">ループ＝<span class="hl">「エージェントが、決められた停止条件を満たすまで作業のサイクルを繰り返すこと」</span></p>
+  <div class="sep" style="margin:24px 0;"></div>
+  <div class="flow" style="max-width:1000px;">
+    <div class="step"><div class="t">Prompt</div><div class="d">1回の指示</div></div><div class="arrow">→</div>
+    <div class="step"><div class="t">Context</div><div class="d">文脈設計</div></div><div class="arrow">→</div>
+    <div class="step"><div class="t">Harness</div><div class="d">環境整備</div></div><div class="arrow">→</div>
+    <div class="step" style="border-top-color:var(--accent-deep);background:var(--accent-soft);"><div class="t">Loop</div><div class="d">回す設計</div></div>
+  </div>
+  <p class="ghost">✅ Anthropic「Getting started with loops」(2026/6/30)</p>
+  <span class="kick">定義・進化</span><span class="sno">8</span>
+</div>
+
+<!-- 09 第2章 4種の導入 -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <p class="eyebrow">公式の整理</p><h2 class="stitle"><span class="secno">第2章</span>ループは4種類ある</h2>
+  <div class="cols c4">
+    <div class="card center"><div class="pin">1</div><h3>ターン</h3><p>都度プロンプト</p></div>
+    <div class="card center accent"><div class="pin">2</div><h3>ゴール</h3><p>/goalで停止条件</p></div>
+    <div class="card center"><div class="pin">3</div><h3>タイム</h3><p>/loop・/schedule</p></div>
+    <div class="card center accent"><div class="pin">4</div><h3>プロアクティブ</h3><p>イベント駆動</p></div>
+  </div>
+  <p class="lead" style="margin-top:22px;">4つの軸で整理：<span class="hl">何で始まる／何で止まる／どの機能／どんなタスク</span> ✅</p>
+  <span class="kick">4種類</span><span class="sno">9</span>
+</div>
+
+<!-- 10 ①ターンベース -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <div class="head-row"><span class="secno">第2章</span><h2>① ターンベース → SEO</h2></div>
+  <ul class="checks">
+    <li><b>きっかけ</b>：人が都度プロンプト ／ <b>止まる</b>：Claudeが「完了」or「要追加情報」</li>
+    <li>SEOでは <span class="hl">「この構成を相談」「この段落を直して」</span>など都度の相談・下書き</li>
+    <li><span class="hl-a">SKILL.md に検証手順（記事チェックリスト）</span>を書くと自己検証が効く ✅</li>
+  </ul>
+  <span class="kick">①ターンベース</span><span class="sno">10</span>
+</div>
+
+<!-- 11 ②ゴールベース -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <div class="head-row"><span class="secno">第2章</span><h2>② ゴールベース /goal → SEO</h2></div>
+  <ul class="checks">
+    <li><b>きっかけ</b>：その場プロンプト ／ <b>止まる</b>：ゴール達成 or 最大試行回数</li>
+    <li>SEOでは <span class="hl">「品質スコア95点以上になるまで改稿」</span>。前回の95点を停止条件つきループに</li>
+    <li><span class="hl-a">検証役モデルが達成を判定</span>するから、中途半端な切り上げが起きにくい ✅</li>
+  </ul>
+  <div class="prompt" style="margin-top:16px;"><span class="cm"># 例</span><br><span class="c">/goal</span> 対象記事を品質95点以上にする。5回試してダメなら停止する。</div>
+  <span class="kick">②ゴールベース</span><span class="sno">11</span>
+</div>
+
+<!-- 12 ③タイムベース -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <div class="head-row"><span class="secno">第2章</span><h2>③ タイムベース /loop・/schedule → SEO</h2></div>
+  <ul class="checks">
+    <li><b>きっかけ</b>：指定した時間間隔 ／ <b>止まる</b>：自分で止める or 作業完了</li>
+    <li><span class="hl">前回の「朝5時・午後2時・夜10時に起動」はまさにこれ</span></li>
+    <li><code>/loop</code>は手元PC、<code>/schedule</code>はクラウド常駐の「ルーティン」 ✅</li>
+  </ul>
+  <div class="prompt" style="margin-top:16px;"><span class="c">/loop 5m</span> 自分のPRを確認し、レビュー対応とCI失敗の修正をする</div>
+  <span class="kick">③タイムベース</span><span class="sno">12</span>
+</div>
+
+<!-- 13 ④プロアクティブ（新要素） -->
+<div class="slide"><div class="dots br brand"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <div class="head-row"><span class="secno">第2章</span><h2>④ プロアクティブ → <span class="hl-a">今回の新要素</span></h2></div>
+  <ul class="checks">
+    <li><b>きっかけ</b>：イベント or スケジュール（人がリアルタイム関与しない）</li>
+    <li>SEOでは <span class="hl">「順位が下がったら」「GSCにエラーが出たら」自動起動</span></li>
+    <li>オートモード＋<span class="hl-a">ダイナミックワークフロー</span>で複数記事を並行トリアージ→改稿→レビュー</li>
+    <li>時間ではなく <span class="hl">“できごと”に反応</span> するのが前回との決定的な違い</li>
+  </ul>
+  <p class="ghost">✅ Anthropic公式（オートモード/ダイナミックワークフローは研究プレビュー）</p>
+  <span class="kick">④プロアクティブ</span><span class="sno">13</span>
+</div>
+
+<!-- 14 4種まとめ表 -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <div class="head-row"><span class="secno">第2章</span><h2>どれをいつ使うか（公式まとめ）</h2></div>
+  <table class="cmp">
+    <thead><tr><th>ループ</th><th>何を任せる</th><th>使うタイミング</th><th>機能</th></tr></thead>
+    <tbody>
+      <tr><td>ターン</td><td>確認作業</td><td>探索中・検討中</td><td>検証用スキル</td></tr>
+      <tr><td>ゴール</td><td>停止条件</td><td>「完了」が明確</td><td>/goal</td></tr>
+      <tr><td>タイム</td><td class="yes">きっかけ</td><td>外部で定期発生（前回）</td><td>/loop・/schedule</td></tr>
+      <tr><td>プロアクティブ</td><td class="yes">指示そのもの</td><td>繰り返し・内容明確</td><td>全部＋DWF</td></tr>
+    </tbody>
+  </table>
+  <p class="ghost">前回＝③まで。今回＝②＋④まで広げる ✅</p>
+  <span class="kick">4種まとめ</span><span class="sno">14</span>
+</div>
+
+<!-- 15 第3章 単一vsマルチ -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <div class="head-row"><span class="secno">第3章</span><h2>実行役と検証役を分ける（Doer-Verifier）</h2></div>
+  <div class="ba">
+    <div class="panel before"><span class="tag">単一エージェント</span><ul><li>起案も検証も1体で</li><li>自己採点バイアスが出る</li></ul></div>
+    <div class="mid">→</div>
+    <div class="panel after"><span class="tag">実行役 ＋ 検証役</span><ul><li>Writerが起案、Reviewerが検証</li><li>偏りが減り品質が安定</li></ul></div>
+  </div>
+  <p class="ghost">✅ Anthropic「human-agent teams」</p>
+  <span class="kick">Doer-Verifier</span><span class="sno">15</span>
+</div>
+
+<!-- 16 6エージェント前半 -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <div class="head-row"><span class="secno">第3章</span><h2>6つのエージェント（前半）</h2></div>
+  <div class="cols c3">
+    <div class="card center"><div class="pin">R</div><h3>Research</h3><p>KW・SERP・競合を調査しブリーフ化</p></div>
+    <div class="card center accent"><div class="pin">W</div><h3>Writer</h3><p>ブリーフを入力に執筆</p></div>
+    <div class="card center"><div class="pin">Rv</div><h3>Reviewer</h3><p>事実・E-E-A-T・読みやすさを点検</p></div>
+  </div>
+  <span class="kick">役割①〜③</span><span class="sno">16</span>
+</div>
+
+<!-- 17 6エージェント後半 -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <div class="head-row"><span class="secno">第3章</span><h2>6つのエージェント（後半）</h2></div>
+  <div class="cols c3">
+    <div class="card center"><div class="pin">S</div><h3>SEO Checker</h3><p>SEO/GEO・内部リンク・構造化データ</p></div>
+    <div class="card center"><div class="pin">P</div><h3>Publisher</h3><p>CMS入稿・schema付与・整形</p></div>
+    <div class="card center accent"><div class="pin">M</div><h3>Monitor</h3><p>順位・CTRを監視し次ループを起こす</p></div>
+  </div>
+  <p class="ghost">AIエージェント（Claude Code・Codex等）のスキル/サブエージェント/MCP/フックが各実体になる ✅</p>
+  <span class="kick">役割④〜⑥</span><span class="sno">17</span>
+</div>
+
+<!-- 18 共有メモリと複利 -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <div class="head-row"><span class="secno">第3章</span><h2>共有メモリ → 複利（compounding）</h2></div>
+  <ul class="checks">
+    <li>各ループは「何を見つけ何をしたか」を <span class="hl">LOG.md に追記</span> → 次回は続きから</li>
+    <li>複数ループ（SEO・広告・プロダクト）が <span class="hl-a">同じ知識ベースを読み書き</span></li>
+    <li>広告ループが見つけたKWがSEOループに流れ込む → <span class="hl">回すほど賢くなる</span></li>
+    <li>前提は「公開の場で働く」＝エージェントが読める形で残すこと ✅</li>
+  </ul>
+  <span class="kick">複利</span><span class="sno">18</span>
+</div>
+
+<!-- 19 ガードレール -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <div class="head-row"><span class="secno">第3章</span><h2>ガードレールと北極星</h2></div>
+  <ul class="checks">
+    <li><span class="hl">北極星</span>：会社のミッションに根ざした長期ゴールを共有 → 主体的提案が生まれる ✅</li>
+    <li><span class="hl">名簿</span>：誰（人／エージェント）が何を担うかを明文化</li>
+    <li>「<span class="hl-a">絶対にしてはいけないこと</span>」は指示ではなく <span class="hl">フック＋権限設定</span> で止める ✅</li>
+  </ul>
+  <span class="kick">ガードレール</span><span class="sno">19</span>
+</div>
+
+<!-- 20 第4章 4つのループ overview -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <p class="eyebrow">実践例</p><h2 class="stitle"><span class="secno">第4章</span>作れる4つのSEOループ</h2>
+  <div class="cols c4">
+    <div class="card center"><div class="pin">1</div><h3>新規記事制作</h3><p>ゴールベース</p></div>
+    <div class="card center"><div class="pin">2</div><h3>既存記事改善</h3><p>プロアクティブ</p></div>
+    <div class="card center"><div class="pin">3</div><h3>Search Console改善</h3><p>/schedule</p></div>
+    <div class="card center"><div class="pin">4</div><h3>E-E-A-Tチェック</h3><p>Doer-Verifier</p></div>
+  </div>
+  <p class="ghost">いずれも「トリガー → 作業 → ログ → 次のトリガー」</p>
+  <span class="kick">4つのループ</span><span class="sno">20</span>
+</div>
+
+<!-- 21 ①新規記事 -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <div class="head-row"><span class="secno">第4章</span><h2>① 新規記事制作ループ（ゴールベース）</h2></div>
+  <div class="flow">
+    <div class="step"><div class="t">Research</div><div class="d">ブリーフ</div></div><div class="arrow">→</div>
+    <div class="step"><div class="t">Writer</div><div class="d">執筆</div></div><div class="arrow">→</div>
+    <div class="step"><div class="t">Reviewer</div><div class="d">レビュー</div></div><div class="arrow">→</div>
+    <div class="step"><div class="t">SEO Checker</div><div class="d">検査</div></div><div class="arrow">→</div>
+    <div class="step"><div class="t">Publisher</div><div class="d">公開</div></div>
+  </div>
+  <p class="lead" style="margin-top:24px;text-align:left;"><code>/goal</code>で <span class="hl">「品質95点以上／指摘が全解消」</span> を停止条件に。検証役モデルが判定 ✅</p>
+  <span class="kick">実践例①</span><span class="sno">21</span>
+</div>
+
+<!-- 22 ②既存記事改善 -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <div class="head-row"><span class="secno">第4章</span><h2>② 既存記事改善ループ（プロアクティブ）</h2></div>
+  <ul class="steps">
+    <li><span class="n">1</span><b>Monitor</b> が「順位が下がった記事」を<span class="hl">イベントとして検知</span>して起動</li>
+    <li><span class="n">2</span><b>Research</b> が競合の更新点・新しい検索意図を調査</li>
+    <li><span class="n">3</span><b>Writer</b> が該当箇所をリライト → <b>SEO Checker</b> が再検査して再公開</li>
+    <li><span class="n">4</span>再び監視へ。<span class="hl-a">人が毎日順位表を眺める必要がなくなる</span></li>
+  </ul>
+  <span class="kick">実践例②</span><span class="sno">22</span>
+</div>
+
+<!-- 23 ③Search Console -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <div class="head-row"><span class="secno">第4章</span><h2>③ Search Console改善ループ（/schedule）</h2></div>
+  <ul class="checks">
+    <li><code>/schedule</code>でGSCを定期チェック＋<span class="hl">下落は即トリガー</span></li>
+    <li>低CTRページのタイトル書き換え・内部リンク補強・indexエラーのエスカレーション 🔶</li>
+    <li>順位下落を「週単位」ではなく <span class="hl-a">「数時間単位」</span> で検知 🔶</li>
+  </ul>
+  <p class="ghost">✅ 2025年12月、GSCにAI-powered configuration追加（Google公式）／⚠️接続ツールはサードパーティ</p>
+  <span class="kick">実践例③</span><span class="sno">23</span>
+</div>
+
+<!-- 24 ④E-E-A-T -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <div class="head-row"><span class="secno">第4章</span><h2>④ E-E-A-Tチェックループ（Doer-Verifier）</h2></div>
+  <table class="cmp"><thead><tr><th>E-E-A-T</th><th>意味</th><th>検証役の検査例</th></tr></thead>
+    <tbody>
+      <tr><td>Experience</td><td>実体験</td><td class="yes">一次体験・実データが入っているか</td></tr>
+      <tr><td>Expertise</td><td>専門性</td><td>記述の正確性</td></tr>
+      <tr><td>Authoritativeness</td><td>権威性</td><td>引用・被リンク・出典の質</td></tr>
+      <tr><td>Trust</td><td>信頼性</td><td class="yes">事実確認・透明性（最重要）</td></tr>
+    </tbody></table>
+  <p class="ghost">✅ 2022末にExperience追加。2026年版はAI生成でも基準同一・AI Overviews章新設。直接のランキング要因ではない</p>
+  <span class="kick">実践例④</span><span class="sno">24</span>
+</div>
+
+<!-- 25 実例メディア（owned media） -->
+<div class="slide"><span class="coin"></span>
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <p class="eyebrow">生きた実例</p><h2 class="stitle">実際に「ループでSEO」を回しているメディア</h2>
+  <p class="lead">AIエージェント特化メディアで、この考え方が実運用されています。<br>ぜひ実例として覗いてみてください。</p>
+  <a class="urlchip" href="https://ai-agent-labo.com/" target="_blank" rel="noopener">🔗 ai-agent-labo.com</a>
+  <span class="kick">実例メディア</span><span class="sno">25</span>
+</div>
+
+<!-- 26 コスト・トークン管理 -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <div class="head-row"><span class="secno">第4章</span><h2>コスト・トークン管理（公式）</h2></div>
+  <ul class="checks">
+    <li>小さいタスクに複数エージェントやループは不要（<span class="hl">安く速いモデル</span>で十分なことも）</li>
+    <li>成功・停止条件をはっきり決める／本格運用の前に小規模で試す</li>
+    <li>決まりきった作業はスクリプト化／必要以上の頻度で回さない</li>
+    <li><code>/usage</code>で使用量を確認。隔離環境で回すと安全＆並列化できる</li>
+  </ul>
+  <p class="ghost">✅ Anthropic「Getting started with loops」</p>
+  <span class="kick">コスト管理</span><span class="sno">26</span>
+</div>
+
+<!-- 27 第5章 これまで→これから -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <div class="head-row"><span class="secno">第5章</span><h2>SEO担当者の仕事はこう変わる</h2></div>
+  <div class="ba">
+    <div class="panel before"><span class="tag">これまで</span><ul><li>AIに記事を「書かせる」</li><li>公開後は手作業で改善</li><li>KPIは「書いた本数」</li></ul></div>
+    <div class="mid">→</div>
+    <div class="panel after"><span class="tag">これから</span><ul><li>改善し続ける「仕組み」を設計</li><li>ループが自律で回り続ける</li><li>KPIは「回るループの数と質」</li></ul></div>
+  </div>
+  <span class="kick">役割の転換</span><span class="sno">27</span>
+</div>
+
+<!-- 28 第5章 監督・北極星 -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <div class="head-row"><span class="secno">第5章</span><h2>人は「監督」になる</h2></div>
+  <ul class="checks">
+    <li><span class="hl">北極星を定める</span>：長期ゴールを共有すると、エージェントが新しい作業を主体的に提案 ✅</li>
+    <li><span class="hl-a">検証責任は人間に残る</span>：ループを設計し、停止条件を決め、要所で検証する ✅</li>
+    <li><span class="hl">段階的に信頼を広げる</span>：最初は全部レビュー→実績が出たタスクから自律範囲を拡大 ✅</li>
+    <li>まず一つ、手作業の繰り返しをループ化してみる（公式の“はじめの一歩”）</li>
+  </ul>
+  <span class="kick">監督になる</span><span class="sno">28</span>
+</div>
+
+<!-- 29 まとめ -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <p class="eyebrow">まとめ</p><h2 class="stitle">「書かせる」から<span class="hl">「回す」</span>へ</h2>
+  <ul class="checks" style="max-width:860px;">
+    <li>前回の「AI社員でSEO自動化」を、公式の4種ループで再設計した</li>
+    <li>進化点は ②ゴール（停止条件）＋④プロアクティブ（イベント駆動）＋共有メモリの複利</li>
+    <li>担当者の仕事は「AIが改善し続ける仕組みを設計する」こと</li>
+  </ul>
+  <span class="kick">まとめ</span><span class="sno">29</span>
+</div>
+
+<!-- 30 注意・確度 -->
+<div class="slide">
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <div class="head-row"><h2>読むときの注意</h2></div>
+  <div class="note-box"><h3>⚠️ この資料の確度</h3>
+    <ul><li>✅公式（Anthropic「Getting started with loops / human-agent teams / Steering Claude Code」・Google）／ 🔶一次情報（自チャンネル過去動画・記事）／ ⚠️未確認</li>
+    <li>前回動画の数値（40分・月60本・95点等）は運用条件で変動。保証ではない</li>
+    <li>オートモード／ダイナミックワークフローは研究プレビュー段階の機能</li>
+    <li>GSC接続ツール（Composio/Ryze等）はサードパーティ。公式MCPではない</li></ul></div>
+  <span class="kick">注意・確度</span><span class="sno">30</span>
+</div>
+
+<!-- 31 CTA + 出典 -->
+<div class="slide"><span class="coin" style="top:auto;left:auto;bottom:-42px;right:-36px;"></span>
+  <div class="logo"><img src="__ICON__" alt=""><span class="lt">AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></span></div>
+  <h2 class="stitle">もっと学ぶ</h2>
+  <p class="lead">全文（出典つき）・1枚資料・プレゼントキットは概要欄から</p>
+  <a class="urlchip" href="https://ai-agent-labo.com/" target="_blank" rel="noopener">🔗 実例：ai-agent-labo.com</a>
+  <span class="pill" style="margin-top:16px;">&lt;/&gt; チャンネル登録でもっと学ぶ</span>
+  <span class="kick">CTA・実例</span><span class="sno">31</span>
+</div>
+
+<div class="nav">
+  <button class="nav-btn" onclick="go(-1)">← 前へ</button>
+  <span class="counter" id="ctr">1 / 31</span>
+  <button class="nav-btn" onclick="go(1)">次へ →</button>
+</div>
+<script>
+  var ic="data:image/png;base64,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";
+  document.querySelectorAll('img[src="__ICON__"]').forEach(function(el){el.src=ic;});
+  let cur=0;const slides=document.querySelectorAll('.slide');const total=slides.length;
+  function showSlide(n){slides.forEach(s=>s.classList.remove('active'));cur=((n%total)+total)%total;
+    slides[cur].classList.add('active');document.getElementById('ctr').textContent=(cur+1)+' / '+total;}
+  function go(d){showSlide(cur+d);}
+  document.addEventListener('keydown',e=>{if(['ArrowRight','ArrowDown',' '].includes(e.key)){e.preventDefault();go(1);}
+    if(['ArrowLeft','ArrowUp'].includes(e.key)){e.preventDefault();go(-1);}});
+  showSlide(0);
+</script>
+</body>
+</html>

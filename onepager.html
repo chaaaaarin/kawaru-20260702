@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ループエンジニアリング × SEO — 1ページ完全ガイド｜AIエージェント / Kawaru</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  /* ===== セマンティックトークン（テーマはこの :root 値だけ差し替え）===== */
+  :root{
+    --brand:#1C3461; --brand-deep:#16284A; --brand-soft:rgba(28,52,97,.08); --brand-line:rgba(28,52,97,.22);
+    --accent:#5BBCD4; --accent-deep:#2C7A93; --accent-soft:rgba(91,188,212,.16);
+    --bg:#F7FAFC; --paper:#FFFFFF; --ink:#1C3461; --ink-mid:#4A6080; --ink-sub:#8098B4; --line:rgba(28,52,97,.12);
+    --head:'Noto Sans JP';
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--ink);font-family:'Noto Sans JP',-apple-system,'Hiragino Sans','Yu Gothic',sans-serif;line-height:1.7;}
+  .doc{max-width:880px;margin:0 auto;background:var(--paper);box-shadow:0 0 60px rgba(0,0,0,.10);overflow:hidden;}
+  .draft-tag{background:var(--brand-deep);color:#fff;font-size:12px;font-weight:700;text-align:center;padding:7px;letter-spacing:.4px;}
+  /* hero */
+  .hero{position:relative;background:linear-gradient(160deg,var(--brand-soft) 0%,var(--bg) 70%);padding:50px 52px 44px;border-bottom:3px solid var(--brand-line);overflow:hidden;}
+  .hero .coin{position:absolute;width:160px;height:160px;border-radius:50%;background:var(--accent);opacity:.15;top:-52px;right:-36px;}
+  .hero .chan{display:inline-flex;align-items:center;gap:12px;margin-bottom:18px;}
+  .hero .chan img{width:50px;height:50px;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.16);}
+  .hero .chan b{font-family:var(--head);font-weight:900;color:var(--brand-deep);font-size:17px;}
+  .hero .chan b small{display:block;font-size:11px;color:var(--ink-mid);font-weight:500;letter-spacing:.4px;}
+  .eyebrow{font-family:var(--head);font-weight:900;color:var(--brand-deep);letter-spacing:2px;font-size:13px;display:inline-flex;align-items:center;gap:9px;margin-bottom:12px;}
+  .eyebrow::before{content:'</>';background:var(--accent);color:var(--ink);border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;}
+  h1{font-family:var(--head);font-weight:900;font-size:40px;line-height:1.25;color:var(--ink);}
+  h1 .hl{color:var(--brand-deep);}
+  .hero p.sub{font-size:18px;color:var(--ink-mid);font-weight:700;margin-top:14px;max-width:660px;}
+  .meta{margin-top:20px;display:flex;gap:9px;flex-wrap:wrap;}
+  .meta span{background:var(--paper);border:1.5px solid var(--line);border-radius:999px;padding:6px 15px;font-size:13px;font-weight:700;color:var(--ink-mid);}
+  .meta span.k{background:var(--accent-soft);border-color:var(--accent);color:var(--ink);}
+  /* toc */
+  .tocbar{background:var(--brand-soft);border-bottom:1px solid var(--line);padding:16px 52px;display:flex;flex-wrap:wrap;gap:8px;}
+  .tocbar a{font-size:13px;font-weight:700;color:var(--brand-deep);text-decoration:none;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:5px 13px;}
+  .tocbar a:hover{border-color:var(--brand);}
+  /* section */
+  section{padding:40px 52px;border-bottom:1px solid var(--line);}
+  .sec-h{display:flex;align-items:center;gap:13px;margin-bottom:22px;}
+  .sec-h .no{flex-shrink:0;width:38px;height:38px;border-radius:50%;background:var(--accent);color:var(--ink);font-family:var(--head);font-weight:900;font-size:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 0 var(--accent-deep);}
+  .sec-h h2{font-family:var(--head);font-weight:900;font-size:25px;color:var(--ink);}
+  p.body{font-size:16px;color:var(--ink);margin-bottom:12px;}
+  p.note{font-size:13px;color:var(--ink-mid);} .hl{color:var(--brand-deep);font-weight:700;} .hl-a{color:var(--accent-deep);font-weight:700;}
+  .lead{font-size:17px;color:var(--ink-mid);font-weight:700;}
+  /* TL;DR */
+  .tldr{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px;}
+  .tldr .t{background:var(--bg);border:1.5px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:16px 15px;}
+  .tldr .t .k{font-family:var(--head);font-weight:900;color:var(--ink);font-size:13px;margin-bottom:6px;}
+  .tldr .t p{font-size:14px;font-weight:700;color:var(--ink);line-height:1.5;}
+  /* lists */
+  .bullets{list-style:none;} .bullets li{font-size:16px;font-weight:700;color:var(--ink);padding:10px 0 10px 30px;position:relative;border-bottom:1px solid var(--line);}
+  .bullets li::before{content:'';position:absolute;left:2px;top:50%;transform:translateY(-50%);width:11px;height:11px;border-radius:50%;background:var(--accent);}
+  .checks{list-style:none;} .checks li{font-size:15px;color:var(--ink);padding:7px 0 7px 26px;position:relative;}
+  .checks li::before{content:'✔';position:absolute;left:2px;color:var(--brand);font-weight:900;}
+  /* 2-col */
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:center;}
+  .imgbox{border:2px dashed var(--brand-line);border-radius:12px;background:var(--brand-soft);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--brand-deep);font-weight:700;text-align:center;padding:18px;min-height:170px;}
+  .imgbox .ic{font-size:28px;margin-bottom:6px;} .imgbox small{display:block;color:var(--ink-mid);font-weight:500;font-size:11.5px;margin-top:4px;}
+  /* flow */
+  .flow{display:flex;align-items:stretch;gap:0;}
+  .flow .step{flex:1;background:var(--bg);border:1.5px solid var(--line);border-top:4px solid var(--brand);border-radius:10px;padding:13px 9px;text-align:center;}
+  .flow .step .t{font-family:var(--head);font-weight:900;font-size:14px;color:var(--ink);margin-bottom:4px;}
+  .flow .step .d{font-size:11px;color:var(--ink-mid);line-height:1.4;}
+  .flow .arrow{display:flex;align-items:center;color:var(--accent);font-size:20px;font-weight:900;padding:0 4px;}
+  /* stats */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;}
+  .stat{background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:18px;text-align:center;}
+  .stat .n{font-family:var(--head);font-size:36px;font-weight:900;color:var(--brand-deep);line-height:1;} .stat .n small{font-size:16px;}
+  .stat .u{font-size:12px;color:var(--ink-sub);margin-top:4px;} .stat .l{font-size:13px;font-weight:700;color:var(--ink);margin-top:6px;}
+  /* cards */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;}
+  .cards .c{background:var(--bg);border:1.5px solid var(--line);border-radius:13px;padding:18px 15px;text-align:center;}
+  .cards .c.accent{border-color:var(--brand);border-width:2px;background:var(--paper);}
+  .cards .c .pin{width:38px;height:38px;border-radius:50%;background:var(--accent);color:var(--ink);font-family:var(--head);font-weight:900;font-size:17px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;box-shadow:0 2px 0 var(--accent-deep);}
+  .cards .c h3{font-family:var(--head);font-weight:900;font-size:16px;color:var(--ink);margin-bottom:6px;} .cards .c p{font-size:13px;color:var(--ink-mid);line-height:1.55;}
+  .cards .c .mark{font-size:11px;font-weight:700;color:var(--brand-deep);margin-top:7px;}
+  /* before/after */
+  .ba{display:flex;align-items:stretch;gap:14px;}
+  .ba .panel{flex:1;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:18px;}
+  .ba .panel.after{border-color:var(--brand);border-width:2px;background:var(--paper);}
+  .ba .panel .tag{font-family:var(--head);font-weight:900;font-size:12px;border-radius:999px;padding:3px 11px;display:inline-block;margin-bottom:9px;}
+  .ba .panel.before .tag{background:var(--line);color:var(--ink-mid);} .ba .panel.after .tag{background:var(--brand);color:#fff;}
+  .ba .panel ul{list-style:none;} .ba .panel li{font-size:14px;color:var(--ink);padding:5px 0 5px 20px;position:relative;}
+  .ba .panel.before li::before{content:'×';position:absolute;left:0;color:var(--ink-sub);font-weight:900;}
+  .ba .panel.after li::before{content:'○';position:absolute;left:0;color:var(--brand);font-weight:900;}
+  .ba .mid{display:flex;align-items:center;color:var(--accent);font-size:26px;font-weight:900;}
+  /* table */
+  table.cmp{width:100%;border-collapse:separate;border-spacing:0;font-size:14px;border:1.5px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:14px;}
+  table.cmp th,table.cmp td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);}
+  table.cmp thead th{background:var(--ink);color:#fff;font-family:var(--head);font-weight:700;}
+  table.cmp thead th:first-child{background:var(--brand-deep);}
+  table.cmp tbody tr:last-child td{border-bottom:none;} table.cmp td:first-child{font-weight:700;}
+  table.cmp .yes{color:var(--brand-deep);font-weight:900;} table.cmp .no{color:var(--ink-sub);}
+  /* feature grid */
+  .feat{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;}
+  .feat .f{background:var(--bg);border:1.5px solid var(--line);border-radius:11px;padding:13px;text-align:center;}
+  .feat .f .ic{width:34px;height:34px;border-radius:9px;background:var(--brand-soft);color:var(--brand-deep);font-family:var(--head);font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 7px;}
+  .feat .f b{font-size:13px;color:var(--ink);display:block;} .feat .f span{font-size:11px;color:var(--ink-mid);}
+  /* map */
+  .map{list-style:none;} .map li{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:600;color:var(--ink);padding:11px 14px;margin-bottom:9px;background:var(--bg);border:1.5px solid var(--line);border-left:4px solid var(--brand);border-radius:11px;}
+  .map li .q{flex:1;} .map li .ar{color:var(--accent);font-weight:900;} .map li .a{flex:1.3;color:var(--brand-deep);font-weight:700;}
+  /* steps */
+  .steps{list-style:none;} .steps li{font-size:15px;font-weight:600;color:var(--ink);padding:11px 14px 11px 50px;position:relative;margin-bottom:9px;background:var(--bg);border:1.5px solid var(--line);border-left:4px solid var(--brand);border-radius:11px;}
+  .steps li .n{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:27px;height:27px;background:var(--accent);color:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--head);font-weight:900;font-size:13px;box-shadow:0 2px 0 var(--accent-deep);}
+  /* cycle */
+  .cycle{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;}
+  .cycle .node{width:120px;height:120px;border-radius:50%;background:var(--brand-soft);border:2px solid var(--brand);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px;}
+  .cycle .node b{font-family:var(--head);font-size:14px;color:var(--brand-deep);} .cycle .node span{font-size:10.5px;color:var(--ink-mid);}
+  .cycle .ar{color:var(--accent);font-size:22px;font-weight:900;}
+  /* note box */
+  .box{background:var(--accent-soft);border:1.5px solid var(--accent);border-radius:12px;padding:18px 20px;}
+  .box h3{font-family:var(--head);font-weight:900;color:var(--accent-deep);font-size:16px;margin-bottom:8px;}
+  .box ul{margin-left:18px;font-size:14px;color:var(--ink);} .box li{margin-bottom:5px;}
+  .box a{color:var(--accent-deep);font-weight:700;}
+  /* owned media banner */
+  .om{display:flex;align-items:center;gap:16px;background:var(--paper);border:2px solid var(--brand);border-radius:14px;padding:18px 22px;}
+  .om .ic{font-size:30px;}
+  .om b{font-family:var(--head);font-weight:900;color:var(--ink);font-size:16px;}
+  .om p{font-size:13px;color:var(--ink-mid);margin-top:3px;}
+  .om a{color:var(--brand-deep);font-weight:800;text-decoration:none;border-bottom:2px solid var(--brand-line);}
+  /* footer */
+  footer{background:var(--ink);color:#EBEBE7;padding:36px 52px;}
+  footer .frow{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;}
+  footer .lg{display:flex;align-items:center;gap:11px;} footer .lg img{width:44px;height:44px;border-radius:50%;}
+  footer .lg b{font-family:var(--head);font-weight:900;color:#fff;font-size:15px;} footer .lg b small{display:block;font-size:11px;color:#9C9C96;font-weight:500;}
+  footer .cta{background:var(--accent);color:var(--ink);border-radius:999px;padding:11px 24px;font-family:var(--head);font-weight:900;font-size:14px;text-decoration:none;display:inline-flex;align-items:center;gap:7px;}
+  footer .src{font-size:12px;color:#9C9C96;margin-top:16px;line-height:1.8;} footer .src a{color:var(--accent);text-decoration:none;}
+  .secsub{font-family:var(--head);font-weight:900;font-size:15px;color:var(--ink);margin:18px 0 10px;}
+</style>
+</head>
+<body>
+<div class="doc">
+  <div class="draft-tag">AIエージェント・Kawaru / 2026-07-02</div>
+
+  <div class="hero">
+    <span class="coin"></span>
+    <div class="chan"><img src="__ICON__" alt="AIエージェント / Kawaru"><b>AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></b></div>
+    <div class="eyebrow">ONE-PAGE GUIDE</div>
+    <h1><span class="hl">ループエンジニアリング</span> × SEO<br>「AI社員に書かせる」から「ループを設計する」へ</h1>
+    <p class="sub">前回の「AI社員でSEO自動化」を、Anthropic公式のLoop Engineering（4種類のループ）で捉え直す。時間で動かす自動化から、"できごと"で自律的に動くループへ——何が変わって、何が良くなったのかを整理。</p>
+    <div class="meta"><span class="k">2026年版</span><span>Anthropic公式準拠</span><span>前回動画の進化版</span><span>所要10分</span></div>
+  </div>
+
+  <div class="tocbar">
+    <a href="#s1">① 前回→今回の進化</a><a href="#s2">② ループ4種×SEO</a><a href="#s3">③ ワークフロー</a>
+    <a href="#s4">④ 実践例4つ</a><a href="#s5">⑤ これからの仕事</a><a href="#s6">確度・注意</a>
+  </div>
+
+  <!-- TL;DR -->
+  <section>
+    <div class="sec-h"><div class="no">!</div><h2>まず3行で</h2></div>
+    <div class="tldr">
+      <div class="t"><div class="k">POINT 1</div><p>前回の「AI社員でSEO自動化」を<span class="hl">ループの設計</span>として体系化</p></div>
+      <div class="t"><div class="k">POINT 2</div><p>前回＝<span class="hl">タイムベース</span>中心。今回＝<span class="hl-a">ゴール＋プロアクティブ</span>まで拡張</p></div>
+      <div class="t"><div class="k">POINT 3</div><p>肝は<span class="hl">停止条件・共有メモリ・複利</span>。回すほど賢くなる</p></div>
+    </div>
+    <div class="secsub">こんな悩み、ありませんか？</div>
+    <ul class="bullets"><li>AI社員で記事は自動化できたが、公開後の改善は結局手作業</li><li>順位が落ちても気づくのが遅く、対応が後手</li><li>「自動化の次の一手」が分からない</li></ul>
+  </section>
+
+  <!-- 1 前回→今回 -->
+  <section id="s1">
+    <div class="sec-h"><div class="no">1</div><h2>前回「AI社員」→ 今回「ループ設計」</h2></div>
+    <p class="body">前回まで紹介してきたのは、指揮官＋担当エージェントで記事を回す<span class="hl">「AI社員」方式</span>（キーワード選定→執筆→品質95点→WordPress公開→分析→リライトを朝5時などに定期実行）🔶。十分強力だが、いま見ると<span class="hl-a">「時間で起動する自動化」に寄っていた</span>。</p>
+    <p class="body">Anthropic公式「Getting started with loops」(2026/6/30)はループを <span class="hl">「停止条件を満たすまでサイクルを繰り返すこと」</span> と定義 ✅。これを重ねると、次に伸ばせる余地が見える。</p>
+    <table class="cmp">
+      <thead><tr><th>観点</th><th>前回（AI社員）🔶</th><th>今回（ループ設計）✅</th></tr></thead>
+      <tbody>
+        <tr><td>考え方</td><td class="no">雇って書かせる</td><td class="yes">ループを設計して回す</td></tr>
+        <tr><td>起動</td><td class="no">時間で定期実行</td><td class="yes">イベント駆動（プロアクティブ）</td></tr>
+        <tr><td>停止</td><td>95点で公開判断</td><td class="yes">停止条件を明示（/goal・検証役）</td></tr>
+        <tr><td>検証</td><td>人が最終チェック</td><td class="yes">実行役と検証役を分ける</td></tr>
+        <tr><td>積み上げ</td><td>分析を次記事へ</td><td class="yes">共有メモリで複利</td></tr>
+      </tbody>
+    </table>
+    <p class="note">進化の系譜：Prompt → Context → Harness → <span class="hl">Loop</span> Engineering ✅</p>
+  </section>
+
+  <!-- 2 4種のループ -->
+  <section id="s2">
+    <div class="sec-h"><div class="no">2</div><h2>ループの4種類（公式）×SEO</h2></div>
+    <p class="body">公式はループを<span class="hl">4種類</span>に整理 ✅。SEOに当てはめると、前回どこまでで、次に何を足せるかが分かる。</p>
+    <div class="cards">
+      <div class="c"><div class="pin">1</div><h3>ターンベース</h3><p>人が都度プロンプト。記事の相談・下書き。SKILL.mdで自己検証</p></div>
+      <div class="c accent"><div class="pin">2</div><h3>ゴールベース /goal</h3><p>95点になるまで改稿。検証役モデルが達成を判定</p></div>
+      <div class="c"><div class="pin">3</div><h3>タイムベース /loop /schedule</h3><p>毎朝の順位チェック・定期リライト（<span class="hl">前回はここ</span>）</p></div>
+    </div>
+    <div class="cards" style="grid-template-columns:1fr;margin-top:13px;">
+      <div class="c accent" style="text-align:left;"><div class="pin" style="margin:0 0 8px;">4</div><h3>プロアクティブ（今回の新要素）</h3><p style="font-size:14px;">「順位が下がったら」「GSCにエラーが出たら」<span class="hl-a">イベントで自動起動</span>。オートモード＋ダイナミックワークフローで複数記事を並行トリアージ→改稿→レビュー。時間ではなく“できごと”に反応する。</p></div>
+    </div>
+    <p class="note" style="margin-top:12px;">前回＝主に③タイムベース。今回＝②ゴール＋④プロアクティブまで広げるのが進化のキモ ✅</p>
+  </section>
+
+  <!-- 3 ワークフロー -->
+  <section id="s3">
+    <div class="sec-h"><div class="no">3</div><h2>SEOループのワークフロー</h2></div>
+    <p class="body"><span class="hl">専門特化エージェントの分業</span>が有効 🔶。6つの役割に分ける。</p>
+    <div class="cards">
+      <div class="c"><div class="pin">R</div><h3>Research</h3><p>KW・SERP・競合→ブリーフ</p></div>
+      <div class="c accent"><div class="pin">W</div><h3>Writer</h3><p>ブリーフから執筆</p></div>
+      <div class="c"><div class="pin">Rv</div><h3>Reviewer</h3><p>事実・E-E-A-T点検</p></div>
+    </div>
+    <div class="cards" style="margin-top:13px;">
+      <div class="c"><div class="pin">S</div><h3>SEO Checker</h3><p>SEO/GEO・内部リンク・構造化</p></div>
+      <div class="c"><div class="pin">P</div><h3>Publisher</h3><p>CMS入稿・schema</p></div>
+      <div class="c accent"><div class="pin">M</div><h3>Monitor</h3><p>順位監視→次ループ起動</p></div>
+    </div>
+    <div class="box" style="margin-top:16px;"><h3>公式から足す3つの要点 ✅</h3>
+      <ul>
+        <li><b>実行役と検証役を分ける（Doer-Verifier）</b>：起案と検証を別エージェントに。自己採点バイアスが減る</li>
+        <li><b>共有メモリに学びを残す</b>：LOG.mdに追記→次回続きから。複数ループが同じ知識ベースを読み書き＝<span class="hl">複利</span></li>
+        <li><b>役割・北極星・段階的な信頼</b>：名簿で役割を明文化、長期ゴールを共有、実績で自律範囲を拡大</li>
+      </ul></div>
+    <p class="note" style="margin-top:10px;">「絶対にしてはいけないこと」は指示ではなく<span class="hl">フック＋権限設定</span>で止める（公式）✅</p>
+  </section>
+
+  <!-- 4 実践例 -->
+  <section id="s4">
+    <div class="sec-h"><div class="no">4</div><h2>実践例 — 4つのループ</h2></div>
+    <ul class="map">
+      <li><span class="q"><b>① 新規記事制作（ゴールベース）</b><br>直列で回す</span><span class="ar">→</span><span class="a">/goalで「95点/指摘全解消」を停止条件に</span></li>
+      <li><span class="q"><b>② 既存記事改善（プロアクティブ）</b><br>順位下落をイベント検知</span><span class="ar">→</span><span class="a">競合更新点を調べ自動リライト</span></li>
+      <li><span class="q"><b>③ Search Console改善（/schedule）</b><br>GSCを定期＋下落で即起動</span><span class="ar">→</span><span class="a">低CTRタイトル修正・内部リンク補強 🔶</span></li>
+      <li><span class="q"><b>④ E-E-A-Tチェック（Doer-Verifier）</b><br>検証役が品質基準で点検</span><span class="ar">→</span><span class="a">経験・専門性・権威性・信頼性を毎回</span></li>
+    </ul>
+    <div class="om" style="margin-top:16px;">
+      <div class="ic">🔗</div>
+      <div><b>実際にこの考え方で運用されているメディアはこちら</b>
+      <p>AIエージェント特化メディア <a href="https://ai-agent-labo.com/" target="_blank" rel="noopener">ai-agent-labo.com</a> — 生きた実例として覗いてみてください。</p></div>
+    </div>
+    <p class="note" style="margin-top:14px;">💡 コスト注意（公式）：小さいタスクにループは不要／停止条件を明確に／小規模で試す／頻度を上げすぎない／<code>/usage</code>で使用量確認 ✅</p>
+  </section>
+
+  <!-- 5 これから -->
+  <section id="s5">
+    <div class="sec-h"><div class="no">5</div><h2>これからのSEO担当者の仕事</h2></div>
+    <div class="ba">
+      <div class="panel before"><span class="tag">これまで</span><ul><li>AIに記事を「書かせる」</li><li>公開後は手作業で改善</li><li>KPIは「書いた本数」</li></ul></div>
+      <div class="mid">→</div>
+      <div class="panel after"><span class="tag">これから</span><ul><li>改善し続ける「仕組み」を設計</li><li>ループが自律で回り続ける</li><li>KPIは「回るループの数と質」</li></ul></div>
+    </div>
+    <ul class="checks" style="margin-top:16px;">
+      <li><span class="hl">北極星を定める</span>：長期ゴールを共有すると、優秀なエージェントは新しい作業を主体的に提案しはじめる ✅</li>
+      <li><span class="hl-a">検証責任は人間に残る</span>：人は「監督」。ループを設計し、停止条件を決め、要所で検証する ✅</li>
+      <li><span class="hl">段階的に信頼を広げる</span>：最初は全部レビュー→実績が出たタスクから自律範囲を拡大 ✅</li>
+    </ul>
+    <div class="stats" style="margin-top:16px;">
+      <div class="stat"><div class="n">34<small>%</small></div><div class="u">自律エージェントを本番運用 🔶</div><div class="l">2025Q4は14%</div></div>
+      <div class="stat"><div class="n">25-40<small>%</small></div><div class="u">AIワークフローの工数削減 🔶</div><div class="l">BCG調査</div></div>
+      <div class="stat"><div class="n">∞</div><div class="u">改善の複利</div><div class="l">回すほど積み上がる</div></div>
+    </div>
+    <p class="note" style="margin-top:10px;">⚠️ 数値は二次情報。「〜とされる」で扱い断定しない</p>
+  </section>
+
+  <!-- 6 確度・注意 -->
+  <section id="s6">
+    <div class="sec-h"><div class="no">✓</div><h2>確度と注意点</h2></div>
+    <div class="box"><h3>⚠️ この資料の読み方</h3>
+      <ul><li>✅公式確認済み（Anthropic「Getting started with loops / human-agent teams / Steering Claude Code」・Google）／ 🔶一次情報あり（自チャンネル過去動画・記事）／ ⚠️未確認・推測</li>
+      <li>前回動画の数値（40分・月60本・95点等）は運用条件で変動。保証ではない ⚠️</li>
+      <li>「オートモード／ダイナミックワークフロー」は研究プレビュー段階の機能（公式記事時点）⚠️</li>
+      <li>GSC接続ツール（Composio/Ryze等）はサードパーティ。公式MCPではない ⚠️</li></ul></div>
+  </section>
+
+  <footer>
+    <div class="frow">
+      <div class="lg"><img src="__ICON__" alt="AIエージェント / Kawaru"><b>AIエージェント / Kawaru<small>AI を仕事に活かすチャンネル</small></b></div>
+      <a class="cta" href="#">&lt;/&gt; チャンネル登録</a>
+    </div>
+    <p class="src">実例メディア：<a href="https://ai-agent-labo.com/">ai-agent-labo.com</a>　／　全文（GitHub公開）・スライド・プレゼントキットは概要欄から。<br>
+      ※ 本資料は非公式まとめ。数値は出典先の記載に基づく参考値。仕様は変わるため最終確認は各公式ドキュメントで。</p>
+  </footer>
+</div>
+<script>
+  var ic="data:image/png;base64,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";
+  document.querySelectorAll('img[src="__ICON__"]').forEach(function(el){el.src=ic;});
+</script>
+</body>
+</html>
